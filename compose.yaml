@@ -1,0 +1,25 @@
+services:
+  verdaccio:
+    image: verdaccio/verdaccio:6
+    container_name: verdaccio
+    restart: unless-stopped
+    ports:
+      # Prefer binding to the NAS LAN IP in .env, not 0.0.0.0, and do not expose this directly to the Internet.
+      - "${VERDACCIO_BIND:-0.0.0.0}:4873:4873"
+    environment:
+      # Set this only when Verdaccio is behind a HTTPS reverse proxy, for example:
+      # VERDACCIO_PUBLIC_URL=https://npm.example.lan
+      VERDACCIO_PUBLIC_URL: ${VERDACCIO_PUBLIC_URL:-}
+    volumes:
+      - ./verdaccio/conf:/verdaccio/conf
+      - ./verdaccio/storage:/verdaccio/storage
+      - ./verdaccio/plugins:/verdaccio/plugins
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

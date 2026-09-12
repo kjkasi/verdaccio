@@ -1,0 +1,71 @@
+# Verdaccio configuration for a personal NAS npm mirror/proxy.
+# Keep this service LAN/VPN-only. Do not port-forward it directly to the public Internet.
+
+storage: /verdaccio/storage
+plugins: /verdaccio/plugins
+
+web:
+  title: Personal npm mirror
+  gravatar: false
+
+# Local htpasswd auth. Start with max_users: 1 to create the first/only user,
+# then change it to -1 and restart to disable further self-registration.
+auth:
+  htpasswd:
+    file: /verdaccio/conf/htpasswd
+    max_users: 1
+    algorithm: bcrypt
+    rounds: 10
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    timeout: 10s
+    strict_ssl: true
+    cache: true
+
+packages:
+  '@*/*':
+    # Personal mirror mode: require login even for install/read.
+    access: $authenticated
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
+
+  '**':
+    access: $authenticated
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
+
+server:
+  keepAliveTimeout: 60
+  # Enable only when Verdaccio is behind a trusted reverse proxy.
+  # trustProxy: '127.0.0.1'
+
+# Limit request bursts from one user/IP. Tune if CI does many parallel installs.
+userRateLimit:
+  windowMs: 60000
+  max: 1000
+
+max_body_size: 10mb
+
+middlewares:
+  audit:
+    enabled: false
+
+listen:
+  - 0.0.0.0:4873
+
+log:
+  type: stdout
+  format: json
+  level: http
+  redact:
+    paths:
+      - req.header.authorization
+      - req.header.cookie
+    censor: '<redacted>'
+
+i18n:
+  web: en-US

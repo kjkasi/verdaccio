@@ -70,6 +70,11 @@ web_modules/
 .env.*
 !.env.example
 
+# Verdaccio runtime data/secrets
+verdaccio/storage/
+verdaccio/plugins/
+verdaccio/conf/htpasswd
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
