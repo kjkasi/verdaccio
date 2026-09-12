@@ -9,8 +9,6 @@ Personal Verdaccio registry for a NAS. It works as a stable npmjs proxy/mirror: 
 - `compose.yaml` — Docker Compose service using the official `verdaccio/verdaccio:6` image.
 - `.env.example` — optional bind/public URL settings.
 - `verdaccio/conf/config.yaml` — NAS-oriented Verdaccio config.
-- `online.yaml`, `offline.yaml`, `README_OLD.md` — old/local examples kept for reference.
-
 Runtime files are intentionally ignored by git:
 
 - `verdaccio/storage/` — cached packages and metadata.
@@ -90,7 +88,7 @@ npm config set registry https://registry.npmjs.org/
 
 ## Current security posture
 
-The included config is intentionally stricter than the old `online.yaml`:
+The included config is intentionally strict:
 
 - only the official npmjs uplink is used;
 - `strict_ssl: true`;
